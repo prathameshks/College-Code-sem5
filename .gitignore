@@ -1,0 +1,8 @@
+*.out
+*.exe
+.vscode
+~*.*
+tempCodeRunnerFile.*
+temp 
+*.o
+a
