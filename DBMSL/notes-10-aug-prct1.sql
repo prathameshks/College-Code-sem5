@@ -50,3 +50,11 @@ foreign key(cust_name) references Customer(cust_name),
 foreign key(loan_no) references Loan(loan_no)
 );
 
+-- insert in branch table
+INSERT INTO Branch values
+('Pune_wadia','Pune',10256),
+('Pune_kharadi','Pune',23056),
+('Pimpri_1','Pimpri',1),
+('Bhoom_main','Bhoom',125445);
+
+
