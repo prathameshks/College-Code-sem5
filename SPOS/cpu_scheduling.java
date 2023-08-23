@@ -71,6 +71,7 @@ class cpu_scheduling {
 
         int sumWT = 0;
         int sumTAT = 0;
+        int time = 0;
 
         ct[0] = list[0].burst_t;
         tat[0] = ct[0] - list[0].arr_t;
@@ -81,7 +82,11 @@ class cpu_scheduling {
         sumTAT += tat[0];
 
         for (int i = 1; i < p_num; i++) {
-            ct[i] = ct[i - 1] + list[i].burst_t;
+            if (list[i].arr_t > ct[i - 1])
+                time = list[i].arr_t;
+            else
+                time = ct[i - 1];
+            ct[i] = time + list[i].burst_t;
             tat[i] = ct[i] - list[i].arr_t;
             wt[i] = tat[i] - list[i].burst_t;
             rt[i] = tat[i] - list[i].burst_t;
@@ -136,5 +141,5 @@ class cpu_scheduling {
 /*
  * 3 p1 6 55 p11 65 23 p2 3 3
  * 5 P1 2 2 P2 5 6 P3 0 4 P4 0 7 P5 7 4
- * 
+ * 5 P1 2 2 P2 0 1 P3 2 3 P4 3 5 P5 4 5
  */
