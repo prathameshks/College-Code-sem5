@@ -205,7 +205,49 @@ SELECT SUM(amount) from loan;
 DELETE FROM loan WHERE amount BETWEEN 1300 AND 1500;
 
 -- 16. Delete all tuples at every branch located in Nigdi.
+DELETE FROM depositor WHERE account_number IN
+(SELECT account_number FROM account JOIN branch ON account.branch_name = branch.branch_name WHERE branch.branch_city = 'NIGDI');
+
+DELETE FROM borrower WHERE loan_number IN
+(SELECT loan_number FROM loan JOIN branch ON loan.branch_name = branch.branch_name WHERE branch.branch_city = 'NIGDI');
+
+DELETE FROM account WHERE branch_name IN
+(SELECT branch_name FROM branch WHERE branch_city = 'NIGDI');
+
+DELETE FROM loan WHERE branch_name IN
+(SELECT branch_name FROM branch WHERE branch_city = 'NIGDI');
+
 DELETE FROM branch WHERE branch_city = 'NIGDI';
 
--- delete data from tables where foreign key is present
-DELETE FROM depositor WHERE account_number IN (SELECT account_number FROM account WHERE branch_name = 'NIGDI');
+
+--END 
+
+-- data from tables where foreign key is present
+select * FROM depositor WHERE account_number IN 
+(SELECT account_number FROM account JOIN branch ON account.branch_name = branch.branch_name WHERE branch.branch_city = 'NIGDI');
+
+select * FROM borrower WHERE loan_number IN
+(SELECT loan_number FROM loan JOIN branch ON loan.branch_name = branch.branch_name WHERE branch.branch_city = 'NIGDI');
+
+select * FROM account WHERE branch_name IN
+(SELECT branch_name FROM branch WHERE branch_city = 'NIGDI');
+
+select * FROM loan WHERE branch_name IN
+(SELECT branch_name FROM branch WHERE branch_city = 'NIGDI');
+
+select * FROM branch WHERE branch_city = 'NIGDI';
+
+--  to get deleted data back ie above data
+INSERT INTO branch VALUES ('AKURDI' ,'NIGDI', 150000);
+INSERT INTO account VALUES (2001, 'AKURDI' ,50000),
+(2002, 'AKURDI' ,150000),
+(2003, 'AKURDI' ,12000),
+(2004, 'AKURDI' ,50000);
+INSERT INTO depositor VALUES ('ANKITA KAMBLI', 2001),
+('DHIREN JAIN', 2002),
+('RIDDHI RUNWAL', 2003),
+('SOHAM BHOJ', 2004);
+INSERT INTO loan VALUES(201, 'AKURDI' ,12000),
+(202, 'AKURDI' ,50000);
+INSERT INTO borrower VALUES ('ANKITA KAMBLI', 201),
+('RIDDHI RUNWAL', 202);
