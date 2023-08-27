@@ -1,0 +1,509 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Dell> mysql -u prathamesh -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 13
+Server version: 8.0.34 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> -- create db
+mysql> CREATE DATABASE IF NOT EXISTS bank;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> -- USE DB
+mysql> USE bank;
+Database changed
+mysql> -- create branch table
+mysql> CREATE TABLE branch (
+    -> branch_name VARCHAR(20) PRIMARY KEY,
+    -> branch_city VARCHAR(20),
+    -> assets INT
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- create account table
+mysql> CREATE TABLE account(
+    ->     account_number INT PRIMARY KEY,
+    ->     branch_name VARCHAR(20),
+    ->     balance INT,
+    ->     FOREIGN KEY(branch_name) REFERENCES branch(branch_name)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- create customer table
+mysql> CREATE TABLE customer(
+    ->     customer_name VARCHAR(30) PRIMARY KEY,
+    ->     customer_street VARCHAR(50),
+    ->     customer_city VARCHAR(20)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- create depositor table
+mysql> CREATE TABLE depositor(
+    ->     customer_name VARCHAR(30),
+    ->     account_number INT,
+    ->     FOREIGN KEY(account_number) REFERENCES account(account_number),
+    ->     FOREIGN KEY(customer_name) REFERENCES customer(customer_name)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- create loan table
+mysql> CREATE TABLE loan(
+    ->     loan_number INT PRIMARY KEY,
+    ->     branch_name VARCHAR(20),
+    ->     amount INT,
+    ->     FOREIGN KEY(branch_name) REFERENCES branch(branch_name)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- create borrower table
+mysql> CREATE TABLE borrower(
+    ->     customer_name VARCHAR(30),
+    ->     loan_number INT,
+    ->     FOREIGN KEY(loan_number) REFERENCES loan(loan_number),
+    ->     FOREIGN KEY(customer_name) REFERENCES customer(customer_name)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO branch values
+    -> ('AKURDI' ,'NIGDI', 150000),
+    -> ('CAMP', 'PUNE', 100000),
+    -> ('KHADKI', 'PUNE', 155000),
+    -> ('NAVI MUMBAI', 'MUMBAI', 105000),
+    -> ('SANTA CRUZ', 'MUMBAI', 105000),
+    -> ('STATION', 'PUNE', 155000);
+Query OK, 6 rows affected (0.00 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO account values (1001, 'CAMP' ,60000),
+    -> (1002, 'STATION' ,100000),
+    -> (1003, 'STATION' ,130000),
+    -> (1004, 'KHADKI' ,10000),
+    -> (2001, 'AKURDI' ,50000),
+    -> (2002, 'AKURDI' ,150000),
+    -> (2003, 'AKURDI' ,12000),
+    -> (2004, 'AKURDI' ,50000),
+    -> (3001, 'NAVI MUMBAI' ,60000),
+    -> (3002, 'SANTA CRUZ' ,16000),
+    -> (3003, 'NAVI MUMBAI' ,10000),
+    -> (3004, 'NAVI MUMBAI' ,12000);
+Query OK, 12 rows affected (0.00 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO customer values ('ADESH PARDESHI', 'CAMP' ,'PUNE'),
+    -> ('ANKITA KAMBLI', 'PIMPRI' ,'PIMPRI'),
+    -> ('APOORV SHAH', 'VASAI ROAD' ,'MUMBAI'),
+    -> ('DHIREN JAIN', 'AKURDI' ,'NIGDI'),
+    -> ('NIDA SHAIKH', 'SANTA CRUZ' ,'MUMBAI'),
+    -> ('PRIYANKA LOKHANDE', 'BORIWALI(E)' ,'MUMBAI'),
+    -> ('RIDDHI RUNWAL', 'AKURDI' ,'NIGDI'),
+    -> ('RIDDHI SANGHVI', 'WAKDEWADI' ,'PUNE'),
+    -> ('SHARVARI KULKARNI', 'VIMAN-NAGAR' ,'PUNE'),
+    -> ('SHIKHA JAISWAL', 'ABC CHOWK' ,'PUNE'),
+    -> ('SOHAM BHOJ', 'AKURDI' ,'NIGDI'),
+    -> ('YOJNA GADIYA', 'BORIWALI(W)' ,'MUMBAI');
+Query OK, 12 rows affected (0.01 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO depositor values ('ADESH PARDESHI', 1001),
+    -> ('RIDDHI SANGHVI', 1002),
+    -> ('SHARVARI KULKARNI', 1003),
+    -> ('SHIKHA JAISWAL', 1004),
+    -> ('ANKITA KAMBLI', 2001),
+    -> ('DHIREN JAIN', 2002),
+    -> ('RIDDHI RUNWAL', 2003),
+    -> ('SOHAM BHOJ', 2004),
+    -> ('APOORV SHAH', 3001),
+    -> ('NIDA SHAIKH', 3002),
+    -> ('PRIYANKA LOKHANDE', 3003),
+    -> ('YOJNA GADIYA', 3004);
+Query OK, 12 rows affected (0.01 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO loan values(101, 'CAMP' ,15000),
+    -> (102, 'STATION' ,100000),
+    -> (103, 'KHADKI' ,10000),
+    -> (201, 'AKURDI' ,12000),
+    -> (202, 'AKURDI' ,50000),
+    -> (301, 'NAVI MUMBAI' ,20000),
+    -> (302, 'SANTA CRUZ' ,20000),
+    -> (303, 'SANTA CRUZ' ,60000),
+    -> (304, 'NAVI MUMBAI' ,60000);
+Query OK, 9 rows affected (0.00 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO borrower values ('ADESH PARDESHI', 101),
+    -> ('RIDDHI SANGHVI', 102),
+    -> ('SHARVARI KULKARNI', 103),
+    -> ('ANKITA KAMBLI', 201),
+    -> ('RIDDHI RUNWAL', 202),
+    -> ('APOORV SHAH', 301),
+    -> ('APOORV SHAH', 301),
+    -> ('NIDA SHAIKH', 302),
+    -> ('PRIYANKA LOKHANDE', 303),
+    -> ('YOJNA GADIYA', 304);
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM branch;
++-------------+-------------+--------+
+| branch_name | branch_city | assets |
++-------------+-------------+--------+
+| AKURDI      | NIGDI       | 150000 |
+| CAMP        | PUNE        | 100000 |
+| KHADKI      | PUNE        | 155000 |
+| NAVI MUMBAI | MUMBAI      | 105000 |
+| SANTA CRUZ  | MUMBAI      | 105000 |
+| STATION     | PUNE        | 155000 |
++-------------+-------------+--------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM account;
++----------------+-------------+---------+
+| account_number | branch_name | balance |
++----------------+-------------+---------+
+|           1001 | CAMP        |   60000 |
+|           1002 | STATION     |  100000 |
+|           1003 | STATION     |  130000 |
+|           1004 | KHADKI      |   10000 |
+|           2001 | AKURDI      |   50000 |
+|           2002 | AKURDI      |  150000 |
+|           2003 | AKURDI      |   12000 |
+|           2004 | AKURDI      |   50000 |
+|           3001 | NAVI MUMBAI |   60000 |
+|           3002 | SANTA CRUZ  |   16000 |
+|           3003 | NAVI MUMBAI |   10000 |
+|           3004 | NAVI MUMBAI |   12000 |
++----------------+-------------+---------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM customer;
++-------------------+-----------------+---------------+
+| customer_name     | customer_street | customer_city |
++-------------------+-----------------+---------------+
+| ADESH PARDESHI    | CAMP            | PUNE          |
+| ANKITA KAMBLI     | PIMPRI          | PIMPRI        |
+| APOORV SHAH       | VASAI ROAD      | MUMBAI        |
+| DHIREN JAIN       | AKURDI          | NIGDI         |
+| NIDA SHAIKH       | SANTA CRUZ      | MUMBAI        |
+| PRIYANKA LOKHANDE | BORIWALI(E)     | MUMBAI        |
+| RIDDHI RUNWAL     | AKURDI          | NIGDI         |
+| RIDDHI SANGHVI    | WAKDEWADI       | PUNE          |
+| SHARVARI KULKARNI | VIMAN-NAGAR     | PUNE          |
+| SHIKHA JAISWAL    | ABC CHOWK       | PUNE          |
+| SOHAM BHOJ        | AKURDI          | NIGDI         |
+| YOJNA GADIYA      | BORIWALI(W)     | MUMBAI        |
++-------------------+-----------------+---------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM depositor;
++-------------------+----------------+
+| customer_name     | account_number |
++-------------------+----------------+
+| ADESH PARDESHI    |           1001 |
+| RIDDHI SANGHVI    |           1002 |
+| SHARVARI KULKARNI |           1003 |
+| SHIKHA JAISWAL    |           1004 |
+| ANKITA KAMBLI     |           2001 |
+| DHIREN JAIN       |           2002 |
+| RIDDHI RUNWAL     |           2003 |
+| SOHAM BHOJ        |           2004 |
+| APOORV SHAH       |           3001 |
+| NIDA SHAIKH       |           3002 |
+| PRIYANKA LOKHANDE |           3003 |
+| YOJNA GADIYA      |           3004 |
++-------------------+----------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM loan;
++-------------+-------------+--------+
+| loan_number | branch_name | amount |
++-------------+-------------+--------+
+|         101 | CAMP        |  15000 |
+|         102 | STATION     | 100000 |
+|         103 | KHADKI      |  10000 |
+|         201 | AKURDI      |  12000 |
+|         202 | AKURDI      |  50000 |
+|         301 | NAVI MUMBAI |  20000 |
+|         302 | SANTA CRUZ  |  20000 |
+|         303 | SANTA CRUZ  |  60000 |
+|         304 | NAVI MUMBAI |  60000 |
++-------------+-------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT * FROM borrower;
++-------------------+-------------+
+| customer_name     | loan_number |
++-------------------+-------------+
+| ADESH PARDESHI    |         101 |
+| RIDDHI SANGHVI    |         102 |
+| SHARVARI KULKARNI |         103 |
+| ANKITA KAMBLI     |         201 |
+| RIDDHI RUNWAL     |         202 |
+| APOORV SHAH       |         301 |
+| APOORV SHAH       |         301 |
+| NIDA SHAIKH       |         302 |
+| PRIYANKA LOKHANDE |         303 |
+| YOJNA GADIYA      |         304 |
++-------------------+-------------+
+10 rows in set (0.00 sec)
+
+
+TASKS
+
+
+
+mysql> -- 1. Find the names of all branches in loan relation.
+mysql> SELECT DISTINCT(branch_name) FROM loan;
++-------------+
+| branch_name |
++-------------+
+| AKURDI      |
+| CAMP        |
+| KHADKI      |
+| NAVI MUMBAI |
+| SANTA CRUZ  |
+| STATION     |
++-------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 2. Find all loan numbers for loans made at Akurdi Branch with loan amount > 12000.
+mysql> SELECT loan_number FROM loan WHERE branch_name = "AKURDI" AND amount > 12000;
++-------------+
+| loan_number |
++-------------+
+|         202 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> -- 3. Find all customers who have a loan from bank. Find their names,loan_no and loan amount.
+mysql> SELECT customer_name,borrower.loan_number,amount FROM borrower,loan WHERE borrower.loan_number = loan.loan_number;
++-------------------+-------------+--------+
+| customer_name     | loan_number | amount |
++-------------------+-------------+--------+
+| ADESH PARDESHI    |         101 |  15000 |
+| RIDDHI SANGHVI    |         102 | 100000 |
+| SHARVARI KULKARNI |         103 |  10000 |
+| ANKITA KAMBLI     |         201 |  12000 |
+| RIDDHI RUNWAL     |         202 |  50000 |
+| APOORV SHAH       |         301 |  20000 |
+| APOORV SHAH       |         301 |  20000 |
+| NIDA SHAIKH       |         302 |  20000 |
+| PRIYANKA LOKHANDE |         303 |  60000 |
+| YOJNA GADIYA      |         304 |  60000 |
++-------------------+-------------+--------+
+10 rows in set (0.00 sec)
+
+mysql> -- 4. List all customers in alphabetical order who have loan from Akurdi branch.
+mysql> SELECT customer_name FROM borrower,loan WHERE loan.branch_name = 'AKURDI' AND borrower.loan_number = loan.loan_number ORDER BY customer_name;
++---------------+
+| customer_name |
++---------------+
+| ANKITA KAMBLI |
+| RIDDHI RUNWAL |
++---------------+
+2 rows in set (0.00 sec)
+
+mysql> -- 5. Find all customers who have an account or loan or both at bank.
+mysql> SELECT customer_name FROM customer
+    -> WHERE customer_name IN (SELECT customer_name FROM borrower UNION SELECT customer_name FROM depositor);
++-------------------+
+| customer_name     |
++-------------------+
+| ADESH PARDESHI    |
+| ANKITA KAMBLI     |
+| APOORV SHAH       |
+| DHIREN JAIN       |
+| NIDA SHAIKH       |
+| PRIYANKA LOKHANDE |
+| RIDDHI RUNWAL     |
+| RIDDHI SANGHVI    |
+| SHARVARI KULKARNI |
+| SHIKHA JAISWAL    |
+| SOHAM BHOJ        |
+| YOJNA GADIYA      |
++-------------------+
+12 rows in set (0.01 sec)
+
+mysql> SELECT customer.customer_name FROM customer,borrower
+    -> WHERE customer.customer_name = borrower.customer_name
+    -> UNION SELECT customer.customer_name FROM customer,depositor
+    -> WHERE customer.customer_name = depositor.customer_name;
++-------------------+
+| customer_name     |
++-------------------+
+| ADESH PARDESHI    |
+| ANKITA KAMBLI     |
+| APOORV SHAH       |
+| NIDA SHAIKH       |
+| PRIYANKA LOKHANDE |
+| RIDDHI RUNWAL     |
+| RIDDHI SANGHVI    |
+| SHARVARI KULKARNI |
+| YOJNA GADIYA      |
+| DHIREN JAIN       |
+| SHIKHA JAISWAL    |
+| SOHAM BHOJ        |
++-------------------+
+12 rows in set (0.00 sec)
+
+
+mysql> -- 6. Find all customers who have both account and loan at bank.
+mysql> SELECT customer.customer_name FROM customer,borrower,depositor
+    -> WHERE customer.customer_name = borrower.customer_name and customer.customer_name = depositor.customer_name;
++-------------------+
+| customer_name     |
++-------------------+
+| ADESH PARDESHI    |
+| ANKITA KAMBLI     |
+| APOORV SHAH       |
+| APOORV SHAH       |
+| NIDA SHAIKH       |
+| PRIYANKA LOKHANDE |
+| RIDDHI RUNWAL     |
+| RIDDHI SANGHVI    |
+| SHARVARI KULKARNI |
+| YOJNA GADIYA      |
++-------------------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT customer.customer_name FROM customer
+    -> JOIN borrower ON customer.customer_name = borrower.customer_name
+    -> JOIN depositor ON customer.customer_name = depositor.customer_name;
++-------------------+
+| customer_name     |
++-------------------+
+| ADESH PARDESHI    |
+| ANKITA KAMBLI     |
+| APOORV SHAH       |
+| APOORV SHAH       |
+| NIDA SHAIKH       |
+| PRIYANKA LOKHANDE |
+| RIDDHI RUNWAL     |
+| RIDDHI SANGHVI    |
+| SHARVARI KULKARNI |
+| YOJNA GADIYA      |
++-------------------+
+10 rows in set (0.00 sec)
+
+mysql> -- 7. Find all customers who have account but no loan at the bank.
+mysql> SELECT customer_name FROM customer WHERE customer_name IN (SELECT customer_name FROM depositor) AND customer_name NOT IN (SELECT customer_name FROM borrower);
++----------------+
+| customer_name  |
++----------------+
+| DHIREN JAIN    |
+| SHIKHA JAISWAL |
+| SOHAM BHOJ     |
++----------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT customer.customer_name FROM customer
+    -> JOIN depositor ON customer.customer_name = depositor.customer_name
+    -> LEFT JOIN borrower ON customer.customer_name = borrower.customer_name
+    -> WHERE borrower.customer_name IS NULL;
++----------------+
+| customer_name  |
++----------------+
+| DHIREN JAIN    |
+| SHIKHA JAISWAL |
+| SOHAM BHOJ     |
++----------------+
+3 rows in set (0.00 sec)
+
+mysql> -- 8. Find the average account balance at each branch
+mysql> SELECT branch_name,AVG(balance) FROM account GROUP BY branch_name;
++-------------+--------------+
+| branch_name | AVG(balance) |
++-------------+--------------+
+| AKURDI      |   65500.0000 |
+| CAMP        |   60000.0000 |
+| KHADKI      |   10000.0000 |
+| NAVI MUMBAI |   27333.3333 |
+| SANTA CRUZ  |   16000.0000 |
+| STATION     |  115000.0000 |
++-------------+--------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 9. Find no. of depositors at each branch.
+mysql> SELECT branch_name,count(branch_name) FROM account
+    -> INNER JOIN depositor ON account.account_number = depositor.account_number
+    -> GROUP BY branch_name;
++-------------+--------------------+
+| branch_name | count(branch_name) |
++-------------+--------------------+
+| AKURDI      |                  4 |
+| CAMP        |                  1 |
+| KHADKI      |                  1 |
+| NAVI MUMBAI |                  3 |
+| SANTA CRUZ  |                  1 |
+| STATION     |                  2 |
++-------------+--------------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 10. Find name of Customer and city where customer name starts with Letter P.
+mysql> SELECT customer_name,customer_city FROM customer WHERE customer_name LIKE "P%" or "p%";
++-------------------+---------------+
+| customer_name     | customer_city |
++-------------------+---------------+
+| PRIYANKA LOKHANDE | MUMBAI        |
++-------------------+---------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> -- 11. Display distinct cities of branch.
+mysql> SELECT DISTINCT branch_city from branch;
++-------------+
+| branch_city |
++-------------+
+| NIGDI       |
+| PUNE        |
+| MUMBAI      |
++-------------+
+3 rows in set (0.00 sec)
+
+mysql> -- 12. Find the branches where average account balance > 12000
+mysql> SELECT branch_name,AVG(balance) FROM account GROUP BY branch_name having AVG(balance)>12000;
++-------------+--------------+
+| branch_name | AVG(balance) |
++-------------+--------------+
+| AKURDI      |   65500.0000 |
+| CAMP        |   60000.0000 |
+| NAVI MUMBAI |   27333.3333 |
+| SANTA CRUZ  |   16000.0000 |
+| STATION     |  115000.0000 |
++-------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> -- 13. Find number of tuples in customer relation.
+mysql> SELECT COUNT(*) AS "NUM OF TUPLES" from customer;
++---------------+
+| NUM OF TUPLES |
++---------------+
+|            12 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> -- 14. Calculate total loan amount given by bank.
+mysql> SELECT SUM(amount) from loan;
++-------------+
+| SUM(amount) |
++-------------+
+|      347000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> -- 15. Delete all loans with loan amount between 1300 and 1500. 
+mysql> DELETE FROM loan WHERE amount BETWEEN 1300 AND 1500;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> -- 16. Delete all tuples at every branch located in Nigdi.
