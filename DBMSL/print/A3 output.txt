@@ -1,0 +1,632 @@
+mysql> /*
+   /*> AIM : SQL Queries – all types of Join, Sub-Query and View:
+   /*> Write at least10 SQL queries for suitable database application using SQL DML statements.
+   /*> Note: Instructor will design the queries which demonstrate the use of concepts like all types of
+   /*> Join, Sub-Query and View.
+   /*> */
+mysql> -- create db
+mysql> CREATE DATABASE IF NOT EXISTS bank_a3;
+Query OK, 1 row affected (0.05 sec)
+
+mysql> -- USE DB
+mysql> USE bank_a3;
+Database changed
+mysql> -- create branch table
+mysql> CREATE TABLE branch (
+    -> branch_name VARCHAR(20) PRIMARY KEY,
+    -> branch_city VARCHAR(20),
+    -> assets INT
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> -- create account table
+mysql> CREATE TABLE account(
+    ->     acc_no INT PRIMARY KEY,
+    ->     branch_name VARCHAR(20),
+    ->     balance INT,
+    ->     FOREIGN KEY(branch_name) REFERENCES branch(branch_name)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> -- create customer table
+mysql> CREATE TABLE customer(
+    ->     cust_name VARCHAR(30) PRIMARY KEY,
+    ->     cust_street VARCHAR(50),
+    ->     cust_city VARCHAR(20)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- create depositor table
+mysql> CREATE TABLE depositor(
+    ->     cust_name VARCHAR(30),
+    ->     acc_no INT,
+    ->     FOREIGN KEY(acc_no) REFERENCES account(acc_no),
+    ->     FOREIGN KEY(cust_name) REFERENCES customer(cust_name)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> -- create loan table
+mysql> CREATE TABLE loan(
+    ->     loan_no INT PRIMARY KEY,
+    ->     branch_name VARCHAR(20),
+    ->     amount INT,
+    ->     FOREIGN KEY(branch_name) REFERENCES branch(branch_name)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> -- create borrower table
+mysql> CREATE TABLE borrower(
+    ->     cust_name VARCHAR(30),
+    ->     loan_no INT,
+    ->     FOREIGN KEY(loan_no) REFERENCES loan(loan_no),
+    ->     FOREIGN KEY(cust_name) REFERENCES customer(cust_name)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO branch values
+    -> ('AKURDI' ,'NIGDI', 150000),
+    -> ('CAMP', 'PUNE', 100000),
+    -> ('KHADKI', 'PUNE', 155000),
+    -> ('NAVI MUMBAI', 'MUMBAI', 105000),
+    -> ('SANTA CRUZ', 'MUMBAI', 105000),
+    -> ('STATION', 'PUNE', 155000);
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO account values (1001, 'CAMP' ,60000),
+    -> (1002, 'STATION' ,100000),
+    -> (1003, 'STATION' ,130000),
+    -> (1004, 'KHADKI' ,10000),
+    -> (2001, 'AKURDI' ,50000),
+    -> (2002, 'AKURDI' ,150000),
+    -> (2003, 'AKURDI' ,12000),
+    -> (2004, 'AKURDI' ,50000),
+    -> (3001, 'NAVI MUMBAI' ,60000),
+    -> (3002, 'SANTA CRUZ' ,16000),
+    -> (3003, 'NAVI MUMBAI' ,10000),
+    -> (3004, 'NAVI MUMBAI' ,12000);
+Query OK, 12 rows affected (0.01 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO customer values ('ADESH PARDESHI', 'CAMP' ,'PUNE'),
+    -> ('ANKITA KAMBLI', 'PIMPRI' ,'PIMPRI'),
+    -> ('APOORV SHAH', 'VASAI ROAD' ,'MUMBAI'),
+    -> ('DHIREN JAIN', 'AKURDI' ,'NIGDI'),
+    -> ('NIDA SHAIKH', 'SANTA CRUZ' ,'MUMBAI'),
+    -> ('PRIYANKA LOKHANDE', 'BORIWALI(E)' ,'MUMBAI'),
+    -> ('RIDDHI RUNWAL', 'AKURDI' ,'NIGDI'),
+    -> ('RIDDHI SANGHVI', 'WAKDEWADI' ,'PUNE'),
+    -> ('SHARVARI KULKARNI', 'VIMAN-NAGAR' ,'PUNE'),
+    -> ('SHIKHA JAISWAL', 'ABC CHOWK' ,'PUNE'),
+    -> ('SOHAM BHOJ', 'AKURDI' ,'NIGDI'),
+    -> ('YOJNA GADIYA', 'BORIWALI(W)' ,'MUMBAI');
+Query OK, 12 rows affected (0.01 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO depositor values ('ADESH PARDESHI', 1001),
+    -> ('RIDDHI SANGHVI', 1002),
+    -> ('SHARVARI KULKARNI', 1003),
+    -> ('SHIKHA JAISWAL', 1004),
+    -> ('ANKITA KAMBLI', 2001),
+    -> ('DHIREN JAIN', 2002),
+    -> ('RIDDHI RUNWAL', 2003),
+    -> ('SOHAM BHOJ', 2004),
+    -> ('APOORV SHAH', 3001),
+    -> ('NIDA SHAIKH', 3002),
+    -> ('PRIYANKA LOKHANDE', 3003),
+    -> ('YOJNA GADIYA', 3004);
+Query OK, 12 rows affected (0.01 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO loan values(101, 'CAMP' ,15000),
+    -> (102, 'STATION' ,100000),
+    -> (103, 'KHADKI' ,10000),
+    -> (201, 'AKURDI' ,12000),
+    -> (202, 'AKURDI' ,50000),
+    -> (301, 'NAVI MUMBAI' ,20000),
+    -> (302, 'SANTA CRUZ' ,20000),
+    -> (303, 'SANTA CRUZ' ,60000),
+    -> (304, 'NAVI MUMBAI' ,60000);
+Query OK, 9 rows affected (0.01 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO borrower values ('ADESH PARDESHI', 101),
+    -> ('RIDDHI SANGHVI', 102),
+    -> ('SHARVARI KULKARNI', 103),
+    -> ('ANKITA KAMBLI', 201),
+    -> ('RIDDHI RUNWAL', 202),
+    -> ('APOORV SHAH', 301),
+    -> ('APOORV SHAH', 301),
+    -> ('NIDA SHAIKH', 302),
+    -> ('PRIYANKA LOKHANDE', 303),
+    -> ('YOJNA GADIYA', 304);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> -- SELECT STATEMENTS
+mysql> SELECT * FROM branch;
++-------------+-------------+--------+
+| branch_name | branch_city | assets |
++-------------+-------------+--------+
+| AKURDI      | NIGDI       | 150000 |
+| CAMP        | PUNE        | 100000 |
+| KHADKI      | PUNE        | 155000 |
+| NAVI MUMBAI | MUMBAI      | 105000 |
+| SANTA CRUZ  | MUMBAI      | 105000 |
+| STATION     | PUNE        | 155000 |
++-------------+-------------+--------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM account;
++--------+-------------+---------+
+| acc_no | branch_name | balance |
++--------+-------------+---------+
+|   1001 | CAMP        |   60000 |
+|   1002 | STATION     |  100000 |
+|   1003 | STATION     |  130000 |
+|   1004 | KHADKI      |   10000 |
+|   2001 | AKURDI      |   50000 |
+|   2002 | AKURDI      |  150000 |
+|   2003 | AKURDI      |   12000 |
+|   2004 | AKURDI      |   50000 |
+|   3001 | NAVI MUMBAI |   60000 |
+|   3002 | SANTA CRUZ  |   16000 |
+|   3003 | NAVI MUMBAI |   10000 |
+|   3004 | NAVI MUMBAI |   12000 |
++--------+-------------+---------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM customer;
++-------------------+-------------+-----------+
+| cust_name         | cust_street | cust_city |
++-------------------+-------------+-----------+
+| ADESH PARDESHI    | CAMP        | PUNE      |
+| ANKITA KAMBLI     | PIMPRI      | PIMPRI    |
+| APOORV SHAH       | VASAI ROAD  | MUMBAI    |
+| DHIREN JAIN       | AKURDI      | NIGDI     |
+| NIDA SHAIKH       | SANTA CRUZ  | MUMBAI    |
+| PRIYANKA LOKHANDE | BORIWALI(E) | MUMBAI    |
+| RIDDHI RUNWAL     | AKURDI      | NIGDI     |
+| RIDDHI SANGHVI    | WAKDEWADI   | PUNE      |
+| SHARVARI KULKARNI | VIMAN-NAGAR | PUNE      |
+| SHIKHA JAISWAL    | ABC CHOWK   | PUNE      |
+| SOHAM BHOJ        | AKURDI      | NIGDI     |
+| YOJNA GADIYA      | BORIWALI(W) | MUMBAI    |
++-------------------+-------------+-----------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM depositor;
++-------------------+--------+
+| cust_name         | acc_no |
++-------------------+--------+
+| ADESH PARDESHI    |   1001 |
+| RIDDHI SANGHVI    |   1002 |
+| SHARVARI KULKARNI |   1003 |
+| SHIKHA JAISWAL    |   1004 |
+| ANKITA KAMBLI     |   2001 |
+| DHIREN JAIN       |   2002 |
+| RIDDHI RUNWAL     |   2003 |
+| SOHAM BHOJ        |   2004 |
+| APOORV SHAH       |   3001 |
+| NIDA SHAIKH       |   3002 |
+| PRIYANKA LOKHANDE |   3003 |
+| YOJNA GADIYA      |   3004 |
++-------------------+--------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM borrower;
++-------------------+---------+
+| cust_name         | loan_no |
++-------------------+---------+
+| ADESH PARDESHI    |     101 |
+| RIDDHI SANGHVI    |     102 |
+| SHARVARI KULKARNI |     103 |
+| ANKITA KAMBLI     |     201 |
+| RIDDHI RUNWAL     |     202 |
+| APOORV SHAH       |     301 |
+| APOORV SHAH       |     301 |
+| NIDA SHAIKH       |     302 |
+| PRIYANKA LOKHANDE |     303 |
+| YOJNA GADIYA      |     304 |
++-------------------+---------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM loan;
++---------+-------------+--------+
+| loan_no | branch_name | amount |
++---------+-------------+--------+
+|     101 | CAMP        |  15000 |
+|     102 | STATION     | 100000 |
+|     103 | KHADKI      |  10000 |
+|     201 | AKURDI      |  12000 |
+|     202 | AKURDI      |  50000 |
+|     301 | NAVI MUMBAI |  20000 |
+|     302 | SANTA CRUZ  |  20000 |
+|     303 | SANTA CRUZ  |  60000 |
+|     304 | NAVI MUMBAI |  60000 |
++---------+-------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> -- QUERIES
+mysql> -- 1. Create a View1 to display List all customers in alphabetical order who have loan from Pune_Station branch.
+mysql> CREATE VIEW view1 AS SELECT loan.loan_no,cust_name,branch_name,amount FROM loan JOIN borrower ON loan.loan_no = borrower.loan_no WHERE branch_name = "STATION" ORDER BY cust_name ASC;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update loan set branch_name="STATION" where loan_no = 303;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> -- 2. Create View2 on branch table by selecting any two columns and perform insert update delete operations.
+mysql> CREATE VIEW view2 AS SELECT branch_name,branch_city FROM branch;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO view2 VALUES ('AKURDI' ,'NIGDI');
+ERROR 1062 (23000): Duplicate entry 'AKURDI' for key 'branch.PRIMARY'
+mysql> SELECT * FROM view2;
++-------------+-------------+
+| branch_name | branch_city |
++-------------+-------------+
+| AKURDI      | NIGDI       |
+| CAMP        | PUNE        |
+| KHADKI      | PUNE        |
+| NAVI MUMBAI | MUMBAI      |
+| SANTA CRUZ  | MUMBAI      |
+| STATION     | PUNE        |
++-------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> UPDATE view2 SET branch_city = 'PUNE' WHERE branch_name = 'AKURDI';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM view2;
++-------------+-------------+
+| branch_name | branch_city |
++-------------+-------------+
+| AKURDI      | PUNE        |
+| CAMP        | PUNE        |
+| KHADKI      | PUNE        |
+| NAVI MUMBAI | MUMBAI      |
+| SANTA CRUZ  | MUMBAI      |
+| STATION     | PUNE        |
++-------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> DELETE FROM view2 WEHRE branch_name = 'AKURDI';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'branch_name = 'AKURDI'' at line 1
+mysql> -- 3. Create View3 on borrower and depositor table by selecting any one column from each table perform insert update delete operations.
+mysql> CREATE VIEW view3 AS SELECT cust_name FROM borrower UNION SELECT cust_name FROM depositor;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- 4. Create Union of left and right joint for all customers who have an account or loan or both at bank Department of Computer Engineering Page 15
+mysql> SELECT * FROM depositor LEFT JOIN borrower ON depositor.cust_name = borrower.cust_name UNION SELECT * FROM depositor RIGHT JOIN borrower ON depositor.cust_name = borrower.cust_name;
++-------------------+--------+-------------------+---------+
+| cust_name         | acc_no | cust_name         | loan_no |
++-------------------+--------+-------------------+---------+
+| ADESH PARDESHI    |   1001 | ADESH PARDESHI    |     101 |
+| RIDDHI SANGHVI    |   1002 | RIDDHI SANGHVI    |     102 |
+| SHARVARI KULKARNI |   1003 | SHARVARI KULKARNI |     103 |
+| SHIKHA JAISWAL    |   1004 | NULL              |    NULL |
+| ANKITA KAMBLI     |   2001 | ANKITA KAMBLI     |     201 |
+| DHIREN JAIN       |   2002 | NULL              |    NULL |
+| RIDDHI RUNWAL     |   2003 | RIDDHI RUNWAL     |     202 |
+| SOHAM BHOJ        |   2004 | NULL              |    NULL |
+| APOORV SHAH       |   3001 | APOORV SHAH       |     301 |
+| NIDA SHAIKH       |   3002 | NIDA SHAIKH       |     302 |
+| PRIYANKA LOKHANDE |   3003 | PRIYANKA LOKHANDE |     303 |
+| YOJNA GADIYA      |   3004 | YOJNA GADIYA      |     304 |
++-------------------+--------+-------------------+---------+
+12 rows in set (0.00 sec)
+
+mysql> -- 5. Display content of View1,View2,View3
+mysql> SELECT * FROM view1;
++---------+-------------------+-------------+--------+
+| loan_no | cust_name         | branch_name | amount |
++---------+-------------------+-------------+--------+
+|     303 | PRIYANKA LOKHANDE | STATION     |  60000 |
+|     102 | RIDDHI SANGHVI    | STATION     | 100000 |
++---------+-------------------+-------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM view2;
++-------------+-------------+
+| branch_name | branch_city |
++-------------+-------------+
+| AKURDI      | PUNE        |
+| CAMP        | PUNE        |
+| KHADKI      | PUNE        |
+| NAVI MUMBAI | MUMBAI      |
+| SANTA CRUZ  | MUMBAI      |
+| STATION     | PUNE        |
++-------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM view3;
++-------------------+
+| cust_name         |
++-------------------+
+| ADESH PARDESHI    |
+| ANKITA KAMBLI     |
+| APOORV SHAH       |
+| NIDA SHAIKH       |
+| PRIYANKA LOKHANDE |
+| RIDDHI RUNWAL     |
+| RIDDHI SANGHVI    |
+| SHARVARI KULKARNI |
+| YOJNA GADIYA      |
+| DHIREN JAIN       |
+| SHIKHA JAISWAL    |
+| SOHAM BHOJ        |
++-------------------+
+12 rows in set (0.00 sec)
+
+mysql> -- 6. Create Simple and Unique index.
+mysql> CREATE INDEX index1 ON customer(cust_name);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE UNIQUE INDEX index2 ON customer(cust_name);
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> -- 7. Display index Information
+mysql> SHOW INDEX FROM customer;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          0 | PRIMARY  |            1 | cust_name   | A         |          12 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| customer |          0 | index2   |            1 | cust_name   | A         |          12 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | index1   |            1 | cust_name   | A         |          12 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+3 rows in set (0.01 sec)
+
+mysql> -- 8. Truncate table Customer.
+mysql> TRUNCATE TABLE customer;
+ERROR 1701 (42000): Cannot truncate a table referenced in a foreign key constraint (`bank_a3`.`depositor`, CONSTRAINT `depositor_ibfk_2`)
+mysql> select * from customer;
++-------------------+-------------+-----------+
+| cust_name         | cust_street | cust_city |
++-------------------+-------------+-----------+
+| ADESH PARDESHI    | CAMP        | PUNE      |
+| ANKITA KAMBLI     | PIMPRI      | PIMPRI    |
+| APOORV SHAH       | VASAI ROAD  | MUMBAI    |
+| DHIREN JAIN       | AKURDI      | NIGDI     |
+| NIDA SHAIKH       | SANTA CRUZ  | MUMBAI    |
+| PRIYANKA LOKHANDE | BORIWALI(E) | MUMBAI    |
+| RIDDHI RUNWAL     | AKURDI      | NIGDI     |
+| RIDDHI SANGHVI    | WAKDEWADI   | PUNE      |
+| SHARVARI KULKARNI | VIMAN-NAGAR | PUNE      |
+| SHIKHA JAISWAL    | ABC CHOWK   | PUNE      |
+| SOHAM BHOJ        | AKURDI      | NIGDI     |
+| YOJNA GADIYA      | BORIWALI(W) | MUMBAI    |
++-------------------+-------------+-----------+
+12 rows in set (0.00 sec)
+
+mysql>
+
+
+
+
+
+
+
+PART 2
+
+
+mysql> CREATE DATABASE company_a3;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> use company_a3;
+Database changed
+mysql> CREATE TABLE companies(
+    ->     comp_id VARCHAR(5) PRIMARY KEY,
+    ->     name VARCHAR(20),
+    ->     cost INT,
+    ->     year YEAR(4)
+    ->     );
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+
+mysql> CREATE TABLE orders(
+    ->     comp_id VARCHAR(5),
+    ->     domain VARCHAR(10),
+    ->     quantity INT,
+    ->     FOREIGN KEY(comp_id) REFERENCES companies(comp_id)
+    ->     );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO companies VALUES
+    -> ('C001','ONGC',2000,2010),
+    -> ('C002','HPCL',2500,2012),
+    -> ('C005','IOCL',1000,2014),
+    -> ('C006','BHEL',3000,2015);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO orders VALUES
+    -> ('C001','Oil',109),
+    -> ('C002','Gas',121),
+    -> ('C005','Telecom',115);
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from companies;
++---------+------+------+------+
+| comp_id | name | cost | year |
++---------+------+------+------+
+| C001    | ONGC | 2000 | 2010 |
+| C002    | HPCL | 2500 | 2012 |
+| C005    | IOCL | 1000 | 2014 |
+| C006    | BHEL | 3000 | 2015 |
++---------+------+------+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from orders;
++---------+---------+----------+
+| comp_id | domain  | quantity |
++---------+---------+----------+
+| C001    | Oil     |      109 |
+| C002    | Gas     |      121 |
+| C005    | Telecom |      115 |
++---------+---------+----------+
+3 rows in set (0.00 sec)
+
+mysql>
+
+
+
+mysql> -- 1. Find names, costs, domains and quantities for companies using inner join.
+mysql> SELECT name,cost,domain,quantity FROM companies INNER JOIN orders ON companies.comp_id = orders.comp_id;
++------+------+---------+----------+
+| name | cost | domain  | quantity |
++------+------+---------+----------+
+| ONGC | 2000 | Oil     |      109 |
+| HPCL | 2500 | Gas     |      121 |
+| IOCL | 1000 | Telecom |      115 |
++------+------+---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> -- 2. Find names, costs, domains and quantities for companies using left outer join.
+mysql> SELECT name,cost,domain,quantity FROM companies LEFT JOIN orders ON companies.comp_id = orders.comp_id;
++------+------+---------+----------+
+| name | cost | domain  | quantity |
++------+------+---------+----------+
+| ONGC | 2000 | Oil     |      109 |
+| HPCL | 2500 | Gas     |      121 |
+| IOCL | 1000 | Telecom |      115 |
+| BHEL | 3000 | NULL    |     NULL |
++------+------+---------+----------+
+4 rows in set (0.00 sec)
+
+mysql> -- 3. Find names, costs, domains and quantities for companies using right outer join.
+mysql> SELECT name,cost,domain,quantity FROM companies RIGHT JOIN orders ON companies.comp_id = orders.comp_id;
++------+------+---------+----------+
+| name | cost | domain  | quantity |
++------+------+---------+----------+
+| ONGC | 2000 | Oil     |      109 |
+| HPCL | 2500 | Gas     |      121 |
+| IOCL | 1000 | Telecom |      115 |
++------+------+---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> -- 4. Find names, costs, domains and quantities for companies using Union operator.
+mysql> SELECT name, cost, domain, quantity FROM companies LEFT JOIN orders ON companies.comp_id = orders.comp_id
+    -> UNION
+    -> SELECT name, cost, domain, quantity FROM orders LEFT JOIN companies ON companies.comp_id = orders.comp_id;
++------+------+---------+----------+
+| name | cost | domain  | quantity |
++------+------+---------+----------+
+| ONGC | 2000 | Oil     |      109 |
+| HPCL | 2500 | Gas     |      121 |
+| IOCL | 1000 | Telecom |      115 |
+| BHEL | 3000 | NULL    |     NULL |
++------+------+---------+----------+
+4 rows in set (0.00 sec)
+
+mysql> -- 5. Create View View1 by selecting both tables to show company name and quantities.
+mysql> CREATE OR REPLACE VIEW view1 AS SELECT name,quantity FROM companies LEFT JOIN orders ON companies.comp_id = orders.comp_id;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from view1;
++------+----------+
+| name | quantity |
++------+----------+
+| ONGC |      109 |
+| HPCL |      121 |
+| IOCL |      115 |
+| BHEL |     NULL |
++------+----------+
+4 rows in set (0.00 sec)
+
+mysql> -- 6. Create View2 on branch table by selecting any two columns and perform insert update delete operations.
+mysql> CREATE OR REPLACE VIEW view2 AS SELECT comp_id,name FROM companies;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO view2 VALUES('C009','Meta');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO view2 VALUES('C010','Google');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from view2;
++---------+--------+
+| comp_id | name   |
++---------+--------+
+| C001    | ONGC   |
+| C002    | HPCL   |
+| C005    | IOCL   |
+| C006    | BHEL   |
+| C009    | Meta   |
+| C010    | Google |
++---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> UPDATE view2 SET name = 'Facebook' WHERE comp_id = 'C009';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from view2;
++---------+----------+
+| comp_id | name     |
++---------+----------+
+| C001    | ONGC     |
+| C002    | HPCL     |
+| C005    | IOCL     |
+| C006    | BHEL     |
+| C009    | Facebook |
+| C010    | Google   |
++---------+----------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * from companies;
++---------+----------+------+------+
+| comp_id | name     | cost | year |
++---------+----------+------+------+
+| C001    | ONGC     | 2000 | 2010 |
+| C002    | HPCL     | 2500 | 2012 |
+| C005    | IOCL     | 1000 | 2014 |
+| C006    | BHEL     | 3000 | 2015 |
+| C009    | Facebook | NULL | NULL |
+| C010    | Google   | NULL | NULL |
++---------+----------+------+------+
+6 rows in set (0.00 sec)
+
+mysql> DELETE FROM view2 WHERE name = 'Google';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> DELETE FROM view2 WHERE comp_id = 'C009';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from view2;
++---------+------+
+| comp_id | name |
++---------+------+
+| C001    | ONGC |
+| C002    | HPCL |
+| C005    | IOCL |
+| C006    | BHEL |
++---------+------+
+4 rows in set (0.00 sec)
+
+mysql> -- 7. Display content of View1, View2
+mysql> select * from view1;
++------+----------+
+| name | quantity |
++------+----------+
+| ONGC |      109 |
+| HPCL |      121 |
+| IOCL |      115 |
+| BHEL |     NULL |
++------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from view2;
++---------+------+
+| comp_id | name |
++---------+------+
+| C001    | ONGC |
+| C002    | HPCL |
+| C005    | IOCL |
+| C006    | BHEL |
++---------+------+
+4 rows in set (0.00 sec)
+

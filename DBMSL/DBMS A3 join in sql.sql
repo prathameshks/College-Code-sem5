@@ -138,3 +138,139 @@ SELECT * FROM depositor;
 SELECT * FROM borrower;
 SELECT * FROM loan;
 
+/*
+Struct
+Account (Acc_no, branch_name,balance)
+Branch (branch_name,branch_city,assets)
+Customer (cust_name,cust_street,cust_city)
+Depositor (cust_name,acc_no)
+Loan (loan_no,branch_name,amount)
+Borrower (cust_name,loan_no)
+
+*/
+
+
+-- QUERIES 
+-- 1. Create a View1 to display List all customers in alphabetical order who have loan from Pune_Station branch.
+CREATE VIEW view1 AS SELECT loan.loan_no,cust_name,branch_name,amount FROM loan JOIN borrower ON loan.loan_no = borrower.loan_no WHERE branch_name = "STATION" ORDER BY cust_name ASC;
+update loan set branch_name="STATION" where loan_no = 303;
+
+-- 2. Create View2 on branch table by selecting any two columns and perform insert update delete operations.
+CREATE VIEW view2 AS SELECT branch_name,branch_city FROM branch;
+INSERT INTO view2 VALUES ('AKURDI' ,'NIGDI');
+SELECT * FROM view2;
+
+UPDATE view2 SET branch_city = 'PUNE' WHERE branch_name = 'AKURDI';
+SELECT * FROM view2;
+
+DELETE FROM view2 WEHRE branch_name = 'AKURDI';
+
+-- 3. Create View3 on borrower and depositor table by selecting any one column from each table perform insert update delete operations.
+CREATE VIEW view3 AS SELECT cust_name FROM borrower UNION SELECT cust_name FROM depositor;
+
+-- 4. Create Union of left and right joint for all customers who have an account or loan or both at bank Department of Computer Engineering Page 15
+SELECT * FROM depositor LEFT JOIN borrower ON depositor.cust_name = borrower.cust_name UNION SELECT * FROM depositor RIGHT JOIN borrower ON depositor.cust_name = borrower.cust_name;
+
+-- 5. Display content of View1,View2,View3 
+SELECT * FROM view1;
+SELECT * FROM view2;
+SELECT * FROM view3;
+
+-- 6. Create Simple and Unique index.
+CREATE INDEX index1 ON customer(cust_name);
+CREATE UNIQUE INDEX index2 ON customer(cust_name);
+
+
+-- 7. Display index Information 
+SHOW INDEX FROM customer;
+
+
+-- 8. Truncate table Customer. 
+TRUNCATE TABLE customer;
+select * from customer;
+
+
+
+-- Part 2
+
+-- Consider following Relation: 
+-- Companies (comp_id, name, cost, year)
+--  C001 ONGC 2000 2010
+--  C002 HPCL 2500 2012
+--  C005 IOCL 1000 2014
+--  C006 BHEL 3000 2015 
+-- Orders (comp_id, domain, quantity)
+--  C001 Oil 109
+--  C002 Gas 121
+--  C005 Telecom 115
+-- Create above tables with appropriate constraints execute the following query:
+
+CREATE DATABASE company_a3;
+use company_a3;
+
+CREATE TABLE companies(
+    comp_id VARCHAR(5) PRIMARY KEY,
+    name VARCHAR(20),
+    cost INT,
+    year YEAR(4)
+    );
+
+CREATE TABLE orders(
+    comp_id VARCHAR(5),
+    domain VARCHAR(10),
+    quantity INT,
+    FOREIGN KEY(comp_id) REFERENCES companies(comp_id)
+    );
+
+INSERT INTO companies VALUES
+('C001','ONGC',2000,2010),
+('C002','HPCL',2500,2012),
+('C005','IOCL',1000,2014),
+('C006','BHEL',3000,2015);
+
+INSERT INTO orders VALUES
+('C001','Oil',109),
+('C002','Gas',121),
+('C005','Telecom',115);
+
+SELECT * FROM companies;
+SELECT * FROM orders;
+
+
+-- 1. Find names, costs, domains and quantities for companies using inner join.
+SELECT name,cost,domain,quantity FROM companies INNER JOIN orders ON companies.comp_id = orders.comp_id;
+
+-- 2. Find names, costs, domains and quantities for companies using left outer join.
+SELECT name,cost,domain,quantity FROM companies LEFT JOIN orders ON companies.comp_id = orders.comp_id;
+
+-- 3. Find names, costs, domains and quantities for companies using right outer join.
+SELECT name,cost,domain,quantity FROM companies RIGHT JOIN orders ON companies.comp_id = orders.comp_id;
+
+-- 4. Find names, costs, domains and quantities for companies using Union operator.
+SELECT name, cost, domain, quantity FROM companies LEFT JOIN orders ON companies.comp_id = orders.comp_id
+UNION
+SELECT name, cost, domain, quantity FROM orders LEFT JOIN companies ON companies.comp_id = orders.comp_id;
+
+-- 5. Create View View1 by selecting both tables to show company name and quantities.
+CREATE OR REPLACE VIEW view1 AS SELECT name,quantity FROM companies LEFT JOIN orders ON companies.comp_id = orders.comp_id;
+select * from view1;
+
+-- 6. Create View2 on branch table by selecting any two columns and perform insert update delete operations.
+CREATE OR REPLACE VIEW view2 AS SELECT comp_id,name FROM companies;
+INSERT INTO view2 VALUES('C009','Meta');
+INSERT INTO view2 VALUES('C010','Google');
+select * from view2;
+
+UPDATE view2 SET name = 'Facebook' WHERE comp_id = 'C009';
+select * from view2;
+SELECT * from companies;
+
+DELETE FROM view2 WHERE name = 'Google';
+DELETE FROM view2 WHERE comp_id = 'C009';
+select * from view2;
+
+
+-- 7. Display content of View1, View2
+select * from view1;
+select * from view2;
+
