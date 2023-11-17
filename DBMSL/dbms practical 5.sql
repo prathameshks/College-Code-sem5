@@ -1,4 +1,6 @@
 -- ORACLE PLSQL
+SET SERVEROUTPUT ON
+
 CREATE TABLE circle_area(radius number(5),area number(10,2));
 
 SELECT * FROM circle_area;
