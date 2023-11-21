@@ -1,6 +1,6 @@
 # Raspberry Pi IR Sensor turn on light when motion is detected
 
-imprt RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(3,GPIO.IN)

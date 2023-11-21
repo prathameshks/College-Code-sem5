@@ -9,7 +9,7 @@ GPIO.setup(5,GPIO.OUT)
 while True:
     val = GPIO.input(3)
     print(val)
-    if val == 1: # noting is detected
+    if val == 0: # noting is detected
         GPIO.output(5,False)
     else:
         GPIO.output(5,True)
