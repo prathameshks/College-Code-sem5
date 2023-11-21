@@ -1,0 +1,19 @@
+for mysql
+mysql -u root -p
+Pass@123
+
+for sqlplus
+sudo su
+Pass@123
+sqlplus sys as sysdba
+root
+
+for mongo
+mongo
+Pass@123
+
+mongosh
+
+mongodb
+
+://localhost:27017
